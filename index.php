@@ -15,9 +15,7 @@
         .user { align-self: flex-end; background: #333; border-right: 4px solid #777; color: #fff; text-align: right; }
         form { display: flex; gap: 10px; }
         input { flex: 1; padding: 12px; background: #000; border: 1px solid #444; color: #fff; border-radius: 4px; outline: none; }
-        input:focus { border-color: #8b0000; }
         button { padding: 12px 20px; background: #8b0000; border: none; color: #fff; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
-        button:hover { background: #a00000; }
     </style>
 </head>
 <body>
@@ -31,24 +29,20 @@
             <button type="submit">УДАР</button>
         </form>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $('#chat-form').on('submit', function(e) {
             e.preventDefault();
             let msg = $('#user-input').val();
             if(!msg.trim()) return;
-
             $('#chat-box').append('<div class="msg user"><strong>Ты:</strong> ' + msg + '</div>');
             $('#user-input').val('');
             $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
-
             $.post('chat.php', {message: msg}, function(data) {
-                let text = data.answer ? data.answer : "Я промолчу...";
-                $('#chat-box').append('<div class="msg bot"><strong>Кратос:</strong> ' + text + '</div>');
+                $('#chat-box').append('<div class="msg bot"><strong>Кратос:</strong> ' + data.answer + '</div>');
                 $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
             }, 'json').fail(function() {
-                $('#chat-box').append('<div class="msg bot"><strong>Кратос:</strong> Боги прервали связь. Проверь логи Render.</div>');
+                $('#chat-box').append('<div class="msg bot"><strong>Кратос:</strong> Боги прервали связь.</div>');
             });
         });
     </script>
