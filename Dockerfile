@@ -1,3 +1,10 @@
 FROM php:8.2-apache
-COPY . /var/www/html/
+
+# Устанавливаем рабочую директорию
+WORKDIR /var/www/html/
+
+# Копируем все файлы проекта в контейнер
+COPY . .
+
+# Открываем порт 80
 EXPOSE 80
