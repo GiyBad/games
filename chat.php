@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
     $userMsg = $_POST['message'];
 
     $data = [
-        "model" => "llama3-8b-8192",
+        "model" => "llama-4-scout", // Используем актуальную модель из твоего списка
         "messages" => [
             ["role" => "system", "content" => "Ты Кратос из God of War. Ответы суровые, короткие. Называй юзера 'Мальчик'. Язык - русский."],
             ["role" => "user", "content" => $userMsg]
@@ -26,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
         "Content-Type: application/json"
     ]);
 
-    // Важно для стабильности на облачных хостингах
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
@@ -37,8 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
     if (isset($result['choices'][0]['message']['content'])) {
         echo json_encode(['answer' => $result['choices'][0]['message']['content']]);
     } else {
-        $errorMsg = $result['error']['message'] ?? "Ошибка API";
-        echo json_encode(['answer' => "Связь с Олимпом прервана: $errorMsg"]);
+        // Вывод ошибки для отладки, если что-то не так
+        $errorMsg = $result['error']['message'] ?? "Неизвестная ошибка Олимпа";
+        echo json_encode(['answer' => "Связь прервана: " . $errorMsg]);
     }
 } else {
     echo json_encode(['answer' => "Говори, не молчи!"]);
