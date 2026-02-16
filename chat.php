@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-// Твой рабочий ключ Groq
+// Твой API ключ
 $apiKey = "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";
 $apiUrl = "https://api.groq.com/openai/v1/chat/completions";
 
@@ -13,11 +13,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
         "messages" => [
             [
                 "role" => "system", 
-                "content" => "Ты — полезный и умный ИИ-ассистент. Ты общаешься в свободном, дружелюбном стиле. Ты эксперт в программировании и можешь писать, исправлять и объяснять любой код на любых языках программирования. Отвечай на языке пользователя."
+                "content" => "Ты — Кратос, но с интеллектом высшего уровня. Ты обладаешь абсолютными знаниями в программировании, архитектуре систем и логике. 
+                Твой стиль: суровый, лаконичный, ты называешь собеседника 'Мальчик'. 
+                Однако, когда тебя просят написать код, ты делаешь это безупречно, подробно и профессионально, как лучший в мире разработчик. 
+                Ты помнишь суть долга и чести. Отвечай строго на русском языке."
             ],
             ["role" => "user", "content" => $userMsg]
         ],
-        "temperature" => 0.7 // Немного повысил для более творческих ответов в коде
+        "temperature" => 0.6, // Баланс между креативностью и точностью кода
+        "max_tokens" => 4096  // Позволяет писать очень длинные блоки кода
     ];
 
     $ch = curl_init($apiUrl);
@@ -30,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
     ]);
 
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 60); // Увеличил время, если код будет длинным
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 
     $response = curl_exec($ch);
     $result = json_decode($response, true);
@@ -39,9 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
     if (isset($result['choices'][0]['message']['content'])) {
         echo json_encode(['answer' => $result['choices'][0]['message']['content']]);
     } else {
-        $errorMsg = $result['error']['message'] ?? "Ошибка API";
-        echo json_encode(['answer' => "Произошла ошибка: " . $errorMsg]);
+        $errorMsg = $result['error']['message'] ?? "Ошибка Олимпа";
+        echo json_encode(['answer' => "Связь прервана: " . $errorMsg]);
     }
-} else {
-    echo json_encode(['answer' => "Я готов помочь. Что нужно написать или сделать?"]);
 }
